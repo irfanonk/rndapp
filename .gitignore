@@ -1,7 +1,7 @@
 # OSX
 #
 .DS_Store
-
+.env
 # Xcode
 #
 build/
@@ -33,6 +33,7 @@ local.properties
 # node.js
 #
 node_modules/
+node_modules
 package-lock.json # include if you are using npm - don't use both yarn and npm
 npm-debug.log
 yarn-error.log
