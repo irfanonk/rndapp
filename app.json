@@ -1,0 +1,19 @@
+{
+  "expo": {
+    "name": "rndapp",
+    "slug": "rndapp",
+    "version": "1.0.0",
+    "sdkVersion": "44.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.irfanonk.rndapp"
+    },
+    "android": {
+      "package": "com.irfanonk.rndapp"
+    }
+  }
+}

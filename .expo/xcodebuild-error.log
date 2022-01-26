@@ -1,0 +1,2 @@
+objc[60575]: Class AMSupportURLConnectionDelegate is implemented in both /usr/lib/libamsupport.dylib (0x1f381b130) and /Library/Apple/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/MobileDevice (0x1039802c8). One of the two will be used. Which one is undefined.
+objc[60575]: Class AMSupportURLSession is implemented in both /usr/lib/libamsupport.dylib (0x1f381b180) and /Library/Apple/System/Library/PrivateFrameworks/MobileDevice.framework/Versions/A/MobileDevice (0x103980318). One of the two will be used. Which one is undefined.
