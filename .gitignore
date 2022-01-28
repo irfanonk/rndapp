@@ -59,3 +59,11 @@ buck-out/
 *.jsbundle
 
 .expo
+.expo/packager-info.json
+*.log
+*.lock
+.expo/packager-info.json
+.expo/packager-info.json
+.env
+.expo/xcodebuild.log
+.env

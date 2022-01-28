@@ -18,13 +18,16 @@ import {
   CAMPAIGN_FACTORY_ADDRESS,
 } from "@env";
 import Common, { Chain } from "@ethereumjs/common";
-import { Transaction } from "@ethereumjs/tx";
+// import { Transaction } from "@ethereumjs/tx";
 
 import CampaignFactory from "../../eth/build/CampaignFactory.json";
 import Campaign from "../../eth/build/Campaign.json";
+import Token from "../../eth/build/Token.json";
+
 import { Buffer } from "buffer";
 
 var Tx = require("ethereumjs-tx").Transaction;
+const ethereumjs_common = require("ethereumjs-common").default;
 
 export default function App({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
@@ -42,14 +45,19 @@ export default function App({ navigation }) {
   //   () => new Web3(new Web3.providers.HttpProvider(INFURA_ROBSTEN_URL))
   // );
 
-  const onClickNew = async () => {
+  const onClickOne = async () => {
     // console.log("new", ACCOUNT_PK);
 
     try {
       var gasPrice = 2; // Or get with web3.eth.gasPrice
       var gasLimit = 3000000;
       // const amountToSend = web3.utils.toWei("0.2", "ether");
-      console.log("addressData", addressData.address, addressData.accountNonce);
+      console.log(
+        "addressData",
+        to,
+        addressData.address,
+        addressData.accountNonce
+      );
       var rawTransaction = {
         from: addressData.address,
         nonce: addressData.accountNonce,
@@ -59,26 +67,36 @@ export default function App({ navigation }) {
         value: 200000000000000000,
         chainId: "3",
       };
+      const params = {
+        from: "0xef86EfEA8498bc43A611c68b41C09D9e8Ca2C44B",
+        to: "0x123be4660688eaeaeb75539d88bebe9108eb69cd",
+        value: "0x2c68af0bb140000",
+        gasPrice: "0x2540be400",
+        gas: "0x61a8",
+      };
+      await web3.eth.sendTransaction(params).then(console.log);
 
-      // var privKey = new Buffer.from(ACCOUNT_PK, "hex");
-      console.log("new", ACCOUNT_PK);
+      // var common = ethereumjs_common.forCustomChain(
+      //   "ropsten",
+      //   { networkId: 1994, chainId: 1994, name: "geth" },
+      //   "muirGlacier"
+      // );
+      // var tx = new Tx(rawTransaction, { common: common });
 
-      const privateKey = Buffer.from(ACCOUNT_PK, "hex");
-      var tx = new Tx(rawTransaction);
-
-      tx.sign(privateKey);
-      var serializedTx = tx.serialize();
-      console.log("serialized", serializedTx.toString("hex"));
-      await web3.eth.sendRawTransaction(
-        "0x" + serializedTx.toString("hex"),
-        function (err, hash) {
-          if (!err) {
-            console.log("Txn Sent and hash is " + hash);
-          } else {
-            console.error(err);
-          }
-        }
-      );
+      // const privateKey = Buffer.from(ACCOUNT_PK, "hex");
+      // tx.sign(privateKey);
+      // var serializedTx = tx.serialize();
+      // // console.log("serialized", serializedTx.toString("hex"));
+      // await web3.eth.sendSignedTransaction(
+      //   "0x" + serializedTx.toString("hex"),
+      //   function (err, hash) {
+      //     if (!err) {
+      //       console.log("Txn Sent and hash is " + hash);
+      //     } else {
+      //       console.error(err);
+      //     }
+      //   }
+      // );
     } catch (error) {
       console.log("err", error);
     }
@@ -115,6 +133,98 @@ export default function App({ navigation }) {
       console.log("err", error);
     }
   };
+
+  const onClickTwo = async () => {
+    let toAddress = "0x053526b3bb25147be27f3cf1e3ddcd5ebfac023f";
+    let value = 0.2;
+    TransferERC20Token(toAddress, value).then(console.log);
+  };
+  async function TransferERC20Token(toAddress, value) {
+    return new Promise(function (resolve, reject) {
+      try {
+        web3.eth.getBlock("latest", false, (error, result) => {
+          var _gasLimit = result.gasLimit;
+          let contract = new web3.eth.Contract(
+            Token.abi,
+            "0x9d5DF1fC8BeAFf148Ea440AD1f7692748dF6302d"
+          );
+          contract.methods
+            .decimals()
+            .call()
+            .then(function (result) {
+              try {
+                console.log("result", result);
+                var decimals = result;
+                let amount = parseFloat(value) * Math.pow(10, decimals);
+                web3.eth.getGasPrice(function (error, result) {
+                  var _gasPrice = result;
+                  try {
+                    const Tx = require("ethereumjs-tx").Transaction;
+                    const privateKey = Buffer.from(ACCOUNT_PK, "hex");
+
+                    var _hex_gasLimit = web3.utils.toHex(
+                      (_gasLimit + 1000000).toString()
+                    );
+                    var _hex_gasPrice = web3.utils.toHex(_gasPrice.toString());
+                    var _hex_value = web3.utils.toHex(amount.toString());
+                    var _hex_Gas = web3.utils.toHex("60000");
+
+                    web3.eth
+                      .getTransactionCount(addressData.address)
+                      .then((nonce) => {
+                        var _hex_nonce = web3.utils.toHex(nonce);
+                        console.log("_hex_nonce", _hex_nonce);
+                        console.log("add", toAddress, _hex_value);
+
+                        const rawTx = {
+                          nonce: _hex_nonce,
+                          from: addressData.address,
+                          to: "0x9d5DF1fC8BeAFf148Ea440AD1f7692748dF6302d",
+                          gasPrice: _hex_gasPrice,
+                          gasLimit: _hex_gasLimit,
+                          gas: _hex_Gas,
+                          value: "0x0",
+                          data: contract.methods
+                            .transfer(toAddress, _hex_value)
+                            .encodeABI(),
+                        };
+                        const tx = new Tx(rawTx, { chain: "ropsten" });
+                        tx.sign(privateKey);
+
+                        var serializedTx =
+                          "0x" + tx.serialize().toString("hex");
+                        web3.eth.sendSignedTransaction(
+                          serializedTx.toString("hex"),
+                          function (err, hash) {
+                            if (err) {
+                              console.log("1");
+                              reject(err);
+                            } else {
+                              resolve(hash);
+                            }
+                          }
+                        );
+                      });
+                  } catch (error) {
+                    console.log("2");
+
+                    reject(error);
+                  }
+                });
+              } catch (error) {
+                console.log("3");
+
+                reject(error);
+              }
+            });
+        });
+      } catch (error) {
+        console.log("4");
+
+        reject(error);
+      }
+    });
+  }
   useEffect(() => {
     console.log("inf");
 
@@ -124,9 +234,14 @@ export default function App({ navigation }) {
           INFURA_ROBSTEN_URL_WSS
         );
         const web3 = new Web3(provider);
-        web3.eth.net.getId().then(console.log);
+        // web3.eth.net.getId().then(console.log);
         setWeb3(web3);
 
+        // let value = 0.01;
+        // let amount = parseFloat(value) * Math.pow(10, 18);
+        // var _hex_value = web3.utils.toHex(amount.toString());
+
+        // console.log("hex", value, amount, _hex_value);
         const { address } = web3.eth.accounts.privateKeyToAccount(ACCOUNT_PK);
         const account = web3.eth.accounts.privateKeyToAccount(ACCOUNT_PK);
         const accountNonce =
@@ -148,6 +263,12 @@ export default function App({ navigation }) {
         );
         const summary = await campaign.methods.getSummary().call();
         console.log("data", addressData, summary);
+        const token = new web3.eth.Contract(
+          Token.abi,
+          "0x9d5DF1fC8BeAFf148Ea440AD1f7692748dF6302d"
+        );
+        const summaryToken = await token.methods.getSummary().call();
+        console.log("token", summaryToken);
         // await campaign.methods.contribute().send({
         //   from: addressData.address,
         //   value: "100000",
@@ -203,7 +324,7 @@ export default function App({ navigation }) {
             </Text>
             <Button
               text="Button"
-              onPress={onClickNew}
+              onPress={onClickTwo}
               style={{
                 marginTop: 10,
               }}
