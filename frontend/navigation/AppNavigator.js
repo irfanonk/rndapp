@@ -11,7 +11,7 @@ import Home from "../screens/Home";
 import About from "../screens/About";
 import Profile from "../screens/Profile";
 
-import SecondScreen from "../screens/SecondScreen";
+import CampaignScreen from "../screens/CampaignScreen";
 
 const MainStack = createNativeStackNavigator();
 const Main = () => {
@@ -22,7 +22,7 @@ const Main = () => {
       }}
     >
       <MainStack.Screen name="MainTabs" component={MainTabs} />
-      <MainStack.Screen name="SecondScreen" component={SecondScreen} />
+      <MainStack.Screen name="CampaignScreen" component={CampaignScreen} />
     </MainStack.Navigator>
   );
 };

@@ -45,95 +45,6 @@ export default function App({ navigation }) {
   //   () => new Web3(new Web3.providers.HttpProvider(INFURA_ROBSTEN_URL))
   // );
 
-  const onClickOne = async () => {
-    // console.log("new", ACCOUNT_PK);
-
-    try {
-      var gasPrice = 2; // Or get with web3.eth.gasPrice
-      var gasLimit = 3000000;
-      // const amountToSend = web3.utils.toWei("0.2", "ether");
-      console.log(
-        "addressData",
-        to,
-        addressData.address,
-        addressData.accountNonce
-      );
-      var rawTransaction = {
-        from: addressData.address,
-        nonce: addressData.accountNonce,
-        gasPrice: web3.utils.toHex(gasPrice * 1e9),
-        gasLimit: web3.utils.toHex(gasLimit),
-        to: to,
-        value: 200000000000000000,
-        chainId: "3",
-      };
-      const params = {
-        from: "0xef86EfEA8498bc43A611c68b41C09D9e8Ca2C44B",
-        to: "0x123be4660688eaeaeb75539d88bebe9108eb69cd",
-        value: "0x2c68af0bb140000",
-        gasPrice: "0x2540be400",
-        gas: "0x61a8",
-      };
-      await web3.eth.sendTransaction(params).then(console.log);
-
-      // var common = ethereumjs_common.forCustomChain(
-      //   "ropsten",
-      //   { networkId: 1994, chainId: 1994, name: "geth" },
-      //   "muirGlacier"
-      // );
-      // var tx = new Tx(rawTransaction, { common: common });
-
-      // const privateKey = Buffer.from(ACCOUNT_PK, "hex");
-      // tx.sign(privateKey);
-      // var serializedTx = tx.serialize();
-      // // console.log("serialized", serializedTx.toString("hex"));
-      // await web3.eth.sendSignedTransaction(
-      //   "0x" + serializedTx.toString("hex"),
-      //   function (err, hash) {
-      //     if (!err) {
-      //       console.log("Txn Sent and hash is " + hash);
-      //     } else {
-      //       console.error(err);
-      //     }
-      //   }
-      // );
-    } catch (error) {
-      console.log("err", error);
-    }
-  };
-  const clickButton = async () => {
-    console.log("clicked");
-    try {
-      const txParams = {
-        nonce: addressData.accountNonce,
-        gasLimit: 30000,
-        gsaPrize: 10000000000000,
-        to: "0x909B197D2b6A7641EE36A18A2c7491A494191FD6",
-        value: 5000000000000000,
-        data:
-          "0x7f7465737432000000000000000000000000000000000000000000000000000000600057",
-      };
-
-      const privateKey = Buffer.from(ACCOUNT_PK, "hex");
-      var tx = new Tx(txParams, { chain: "ropsten" });
-      tx.sign(privateKey);
-
-      var serializedTx = tx.serialize();
-
-      // const common = new Common({ chain: Chain.Ropsten });
-      // const tx = Transaction.fromTxData(txParams, { common });
-
-      // const signedTx = tx.sign(privateKey);
-      // const serializedTx = signedTx.serialize();
-
-      await web3.eth
-        .sendSignedTransaction("0x" + serializedTx.toString("hex"))
-        .on("receipt", console.log);
-    } catch (error) {
-      console.log("err", error);
-    }
-  };
-
   const onClickTwo = async () => {
     let toAddress = "0x053526b3bb25147be27f3cf1e3ddcd5ebfac023f";
     let value = 0.2;
@@ -330,9 +241,9 @@ export default function App({ navigation }) {
               }}
             />
             <Button
-              text="Go to second screen"
+              text="Campaign Contrats"
               onPress={() => {
-                navigation.navigate("SecondScreen");
+                navigation.navigate("CampaignScreen");
               }}
               style={{
                 marginTop: 10,
