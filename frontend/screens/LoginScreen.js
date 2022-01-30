@@ -34,8 +34,7 @@ export default function Login({ navigation }) {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      privateKey:
-        "ea8f4b6db35e0c6ef7dc91dc4a767085cf82d8728b7d4811062d81f4e5f4b978",
+      privateKey: "",
     },
   });
   const onSubmit = (data) => {
