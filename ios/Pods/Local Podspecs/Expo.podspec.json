@@ -4,7 +4,9 @@
   "summary": "The Expo SDK",
   "description": "The Expo SDK",
   "license": "MIT",
-  "authors": "Expo",
+  "authors": {
+    "name": "Expo"
+  },
   "homepage": "https://github.com/expo/expo/tree/master/packages/expo",
   "platforms": {
     "ios": "12.0"

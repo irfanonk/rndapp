@@ -4,7 +4,9 @@
   "summary": "The core of Expo Modules architecture",
   "description": "The core of Expo Modules architecture",
   "license": "MIT",
-  "authors": "650 Industries, Inc.",
+  "authors": {
+    "name": "650 Industries, Inc."
+  },
   "homepage": "https://github.com/expo/expo/tree/master/packages/expo-modules-core",
   "platforms": {
     "ios": "12.0"

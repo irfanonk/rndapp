@@ -1,49 +1,35 @@
 import React, { useEffect, useState } from "react";
-import { View, Linking } from "react-native";
+import { View, Linking, orm } from "react-native";
 import { useWalletConnect } from "@walletconnect/react-native-dapp";
 import {
   Layout,
   Button,
   Text,
+  TextInput,
   Section,
   SectionContent,
   useTheme,
 } from "react-native-rapi-ui";
 import { ethers } from "ethers";
-import Web3 from "web3";
+
 import {
   ACCOUNT_PK,
   INFURA_ROBSTEN_URL_WSS,
   INFURA_ROBSTEN_URL,
   CAMPAIGN_FACTORY_ADDRESS,
 } from "@env";
-import Common, { Chain } from "@ethereumjs/common";
-// import { Transaction } from "@ethereumjs/tx";
-
+import { useForm } from "react-hook-form";
 import CampaignFactory from "../../eth/build/CampaignFactory.json";
 import Campaign from "../../eth/build/Campaign.json";
 import Token from "../../eth/build/Token.json";
 
 import { Buffer } from "buffer";
+import web3 from "../../web3/web3";
 
 var Tx = require("ethereumjs-tx").Transaction;
-const ethereumjs_common = require("ethereumjs-common").default;
 
-export default function App({ navigation }) {
+export default function Home({ navigation }) {
   const { isDarkmode, setTheme } = useTheme();
-  const connector = useWalletConnect();
-
-  const [web3, setWeb3] = useState(null);
-  const [addressData, setAddressData] = useState({});
-
-  const to = "0x909B197D2b6A7641EE36A18A2c7491A494191FD6";
-
-  const connectWallet = React.useCallback(() => {
-    return connector.connect();
-  }, [connector]);
-  // const web3 = React.useMemo(
-  //   () => new Web3(new Web3.providers.HttpProvider(INFURA_ROBSTEN_URL))
-  // );
 
   const onClickTwo = async () => {
     let toAddress = "0x053526b3bb25147be27f3cf1e3ddcd5ebfac023f";
@@ -137,87 +123,8 @@ export default function App({ navigation }) {
     });
   }
   useEffect(() => {
-    console.log("inf");
-
-    (async () => {
-      try {
-        const provider = new Web3.providers.WebsocketProvider(
-          INFURA_ROBSTEN_URL_WSS
-        );
-        const web3 = new Web3(provider);
-        // web3.eth.net.getId().then(console.log);
-        setWeb3(web3);
-
-        // let value = 0.01;
-        // let amount = parseFloat(value) * Math.pow(10, 18);
-        // var _hex_value = web3.utils.toHex(amount.toString());
-
-        // console.log("hex", value, amount, _hex_value);
-        const { address } = web3.eth.accounts.privateKeyToAccount(ACCOUNT_PK);
-        const account = web3.eth.accounts.privateKeyToAccount(ACCOUNT_PK);
-        const accountNonce =
-          "0x" +
-          ((await web3.eth.getTransactionCount(address)) + 1).toString(16);
-        setAddressData({ accountNonce: accountNonce, address: address });
-
-        const campaignFactory = new web3.eth.Contract(
-          CampaignFactory.abi,
-          CAMPAIGN_FACTORY_ADDRESS
-        );
-
-        const deployedCampaignAddress = await campaignFactory.methods
-          .getDeployedCampaign()
-          .call();
-        const campaign = new web3.eth.Contract(
-          Campaign.abi,
-          deployedCampaignAddress[0]
-        );
-        const summary = await campaign.methods.getSummary().call();
-        console.log("data", addressData, summary);
-        const token = new web3.eth.Contract(
-          Token.abi,
-          "0x9d5DF1fC8BeAFf148Ea440AD1f7692748dF6302d"
-        );
-        const summaryToken = await token.methods.getSummary().call();
-        console.log("token", summaryToken);
-        // await campaign.methods.contribute().send({
-        //   from: addressData.address,
-        //   value: "100000",
-        // });
-        // web3.eth.getBalance(address).then(console.log);
-
-        // web3.eth.accounts
-        //   .signTransaction(
-        //     {
-        //       to: "0x909B197D2b6A7641EE36A18A2c7491A494191FD6",
-        //       value: "1000000000",
-        //       gas: 2000000,
-        //       gasPrice: "234567897654321",
-        //       nonce: 0,
-        //       chainId: 3,
-        //     },
-        //     ACCOUNT_PK
-        //   )
-        //   .then(console.log);
-        // const provider = new ethers.providers.InfuraProvider(
-        //   "homestead",
-        //   INFURA_PK
-        // );
-        // const provider = new ethers.providers.WebSocketProvider(
-        //   INFURA_ROBSTEN_URL_WSS
-        // );
-        // const wallet = new ethers.Wallet(ACCOUNT_PK, provider);
-        // // console.log("balance", await wallet.getBalance());
-
-        // console.log("address", wallet.address);
-      } catch (error) {
-        console.log("error", error);
-      }
-    })();
-
     return () => {};
   }, []);
-
   return (
     <Layout>
       <View
@@ -234,24 +141,10 @@ export default function App({ navigation }) {
               Welcome
             </Text>
             <Button
-              text="Button"
-              onPress={onClickTwo}
-              style={{
-                marginTop: 10,
-              }}
-            />
-            <Button
               text="Campaign Contrats"
               onPress={() => {
                 navigation.navigate("CampaignScreen");
               }}
-              style={{
-                marginTop: 10,
-              }}
-            />
-            <Button
-              text="Conncet wallet"
-              onPress={connectWallet}
               style={{
                 marginTop: 10,
               }}
